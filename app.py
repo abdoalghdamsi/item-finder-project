@@ -14,7 +14,18 @@ conn.commit()
 st.set_page_config(page_title="مساعد الذاكرة البصري", layout="centered")
 st.title("📍 مساعد الذاكرة البصري الذكي")
 
+
+if total_count > 0:
+    cursor.execute("SELECT SUM(steps) FROM items")
+    total_steps = cursor.fetchone()[0]
+    st.sidebar.info(f"🚶 مشيت {total_steps} خطوة لتخزين هذه الأغراض!")
 tab1, tab2 = st.tabs(["➕ إضافة غرض جديد", "🔍 البحث عن غرض"])
+
+# إحصائيات سريعة في القائمة الجانبية
+st.sidebar.header("📊 إحصائيات الذاكرة")
+cursor.execute("SELECT COUNT(*) FROM items")
+total_count = cursor.fetchone()[0]
+st.sidebar.metric("إجمالي الأغراض", total_count)
 
 with tab1:
     source = st.radio("اختر مصدر الصورة:", ("رفع ملف من الاستوديو", "استخدام الكاميرا"))
@@ -67,3 +78,4 @@ with tab2:
             st.image(res[2], use_container_width=True)
         else:
             st.error("عذراً، هذا الغرض غير مسجل في الذاكرة.")
+
